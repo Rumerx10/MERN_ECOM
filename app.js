@@ -36,4 +36,7 @@ mongoose
     );
   });
 
+app.get("/",(req,res)=>{
+  res.send("Home page.")
+})
 app.use("/api", Router);
