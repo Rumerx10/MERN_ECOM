@@ -8,4 +8,4 @@ const DataSchema = mongoose.Schema(
   { timestamps: true, versionKey: false }
 );
 
-export const WhishModel = mongoose.model("wishes", DataSchema);
+export const WishModel = mongoose.model("wishes", DataSchema);

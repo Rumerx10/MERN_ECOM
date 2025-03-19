@@ -1,4 +1,9 @@
-import { UserOTPService, VerifyOTPService } from "../services/UserServices.js";
+import {
+  ReadProfileService,
+  SaveProfileService,
+  UserOTPService,
+  VerifyOTPService,
+} from "../services/UserServices.js";
 
 export const UserLogin = async (req, res) => {
   const result = await UserOTPService(req);
@@ -17,7 +22,25 @@ export const VerifyLogin = async (req, res) => {
     return res.status(200).json(result);
   }
 };
-export const UserLogout = async (req, res) => {};
-export const CreateProfile = async (req, res) => {};
-export const UpdateProfile = async (req, res) => {};
-export const ReadProfile = async (req, res) => {};
+export const UserLogout = async (req, res) => {
+  console.log("From userLogout------>", req.cookies.accessToken);
+  // let cookieOption = {
+  //   expires: new Date(Date.now() - 24 * 60 * 60 * 1000),
+  //   httpOnly: false,
+  // };
+  res.clearCookie("accessToken");
+  // res.cookie("accessToken", "", cookieOption);
+  return res.status(200).json({ message: "logout successfull" });
+};
+export const CreateProfile = async (req, res) => {
+  const result = await SaveProfileService(req);
+  return res.status(200).json(result);
+};
+export const UpdateProfile = async (req, res) => {
+  const result = await SaveProfileService(req);
+  return res.status(200).json(result);
+};
+export const ReadProfile = async (req, res) => {
+  const result = await ReadProfileService(req);
+  return res.status(200).json(result);
+};

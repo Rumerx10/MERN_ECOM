@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+import { ProfileModel } from "../models/ProfileModel.js";
 import { UserModel } from "../models/UserModel.js";
 import { EncodeToken } from "../utility/TokenHelper.js";
 import { SendEmail } from "./../utility/EmailHelper.js";
@@ -49,10 +51,11 @@ export const VerifyOTPService = async (req) => {
         message: "Invalid email or OTP.",
       };
     } else {
-      const user = await UserModel.findOne({ email: email, otp: otp }).select(
-        "_id"
-      );
-      let token = EncodeToken(email, user["_id"].toString());
+      const userIdObject = await UserModel.findOne({
+        email: email,
+        otp: otp,
+      }).select("_id");
+      let token = EncodeToken(email, userIdObject["_id"].toString());
       await UserModel.updateOne({ email: email }, { $set: { otp: "0" } });
 
       return {
@@ -70,7 +73,42 @@ export const VerifyOTPService = async (req) => {
   }
 };
 
-export const LogoutService = async (req) => {};
-export const CreateProfileService = async (req) => {};
-export const UpdateProfileService = async (req) => {};
-export const ReadProfileService = async (req) => {};
+export const SaveProfileService = async (req) => {
+  try {
+    const userID = req.user.userID;
+    // console.log("user id from user services----->", userID);
+    let reqBody = req.body;
+    // console.log(reqBody);
+    const data = await ProfileModel.updateOne(
+      { userID: userID },
+      { $set: { ...reqBody, userID: new mongoose.Types.ObjectId(userID) } },
+      { upsert: true }
+    );
+    return {
+      status: "success",
+      message: "Data saved successfully.",
+      data: data,
+    };
+  } catch (error) {
+    return {
+      status: "fail",
+      message: "Something went wrong.",
+      error: error.message,
+    };
+  }
+};
+
+export const ReadProfileService = async (req) => {
+  try {
+    const userID = req.user.userID;
+    console.log(userID);
+    const data = await ProfileModel.findOne({ userID: userID });
+    return { status: "success", data: data };
+  } catch (error) {
+    return {
+      status: "fail",
+      message: "Something went wrong.",
+      error: error.message,
+    };
+  }
+};

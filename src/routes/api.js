@@ -1,4 +1,5 @@
 import express from "express";
+import { AuthVerification } from "../middlewares/AuthVerification.js";
 import {
   ProductBrandList,
   ProductCategoryList,
@@ -19,6 +20,11 @@ import {
   UserLogout,
   VerifyLogin,
 } from "../controllers/UserController.js";
+import {
+  RemoveWishList,
+  SaveWishList,
+  WishList,
+} from "../controllers/WishListController.js";
 const router = express.Router();
 
 // Product
@@ -36,10 +42,14 @@ router.get("/ProductListByKeyword/:keyword", ProductListByKeyword);
 // User
 router.get("/UserLogin", UserLogin);
 router.get("/VerifyLogin", VerifyLogin);
-router.get("/UserLogout", UserLogout);
-router.get("/CreateProfile", CreateProfile);
-router.get("/UpdateProfile", UpdateProfile);
-router.get("/UpdateUpdateProfile", UpdateProfile);
-router.get("/ReadProfile", ReadProfile);
+router.get("/UserLogout", AuthVerification, UserLogout);
+router.post("/CreateProfile", AuthVerification, CreateProfile);
+router.post("/UpdateProfile", AuthVerification, UpdateProfile);
+router.get("/ReadProfile", AuthVerification, ReadProfile);
+
+// Wish List
+router.get("/WishList", AuthVerification, WishList);
+router.post("/SaveWishList", AuthVerification, SaveWishList);
+router.delete("/RemoveWishList", AuthVerification, RemoveWishList);
 
 export default router;
