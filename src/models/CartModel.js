@@ -5,7 +5,6 @@ const DataSchema = mongoose.Schema(
     userID: { type: String },
     productID: { type: String },
     color: { type: String },
-    price: { type: String },
     qty: { type: String },
     size: { type: String },
   },

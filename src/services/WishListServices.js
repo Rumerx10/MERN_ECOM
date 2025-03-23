@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
 import { WishModel } from "../models/WishModel.js";
+
 
 export const WishListService = async (req) => {
   try {
@@ -19,12 +19,48 @@ export const WishListService = async (req) => {
       },
     };
     let UnwindProductStage = { $unwind: "$product" };
+    let JointWithBrandStage = {
+      $lookup: {
+        from: "brands",
+        localField: "product.brandID",
+        foreignField: "_id",
+        as: "brand",
+      },
+    };
+    let UnwindBrandStage = { $unwind: "$brand" };
+    let JoinWithCategoryStage = {
+      $lookup: {
+        from: "categories",
+        localField: "product.categoryID",
+        foreignField: "_id",
+        as: "category",
+      },
+    };
+    let UnwindCategoryStage = { $unwind: "$category" };
+    let ProjectionStage={
+      $project: {
+        _id: 0,
+        userID:0,
+        createdAt:0,
+        updatedAt:0,
+        'product._id': 0,
+        'product.brandID': 0,
+        'product.categoryID': 0,
+        'brand._id': 0,
+        'category._id': 0,
+      },
+    }
 
     let data = await WishModel.aggregate([
       MatchStage,
       ConvertStringToObjectId,
       JoinWithProductStage,
-      // UnwindProductStage,
+      UnwindProductStage,
+      JointWithBrandStage,
+      UnwindBrandStage,
+      JoinWithCategoryStage,
+      UnwindCategoryStage,
+      ProjectionStage
     ]);
 
     return { status: "success", data: data };
@@ -44,6 +80,8 @@ export const SaveWishListService = async (req) => {
     return { status: "failed to save data", error: error.message };
   }
 };
+
+
 export const RemoveWishListService = async (req) => {
   try {
     const userID = req.user.userID;
@@ -57,5 +95,3 @@ export const RemoveWishListService = async (req) => {
     return { status: "failed to delete data", error: error.message };
   }
 };
-
-

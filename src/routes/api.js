@@ -25,6 +25,7 @@ import {
   SaveWishList,
   WishList,
 } from "../controllers/WishListController.js";
+import { CartList, CreateCartList, RemoveCartList, UpdateCartList } from "../controllers/CartListController.js";
 const router = express.Router();
 
 // Product
@@ -51,5 +52,13 @@ router.get("/ReadProfile", AuthVerification, ReadProfile);
 router.get("/WishList", AuthVerification, WishList);
 router.post("/SaveWishList", AuthVerification, SaveWishList);
 router.delete("/RemoveWishList", AuthVerification, RemoveWishList);
+
+
+// Cart List
+router.get("/CartList",AuthVerification, CartList);
+router.put("/UpdateCartList/:cartID",AuthVerification, UpdateCartList);
+router.post("/CreateCartList",AuthVerification, CreateCartList)
+router.delete("/RemoveCartList",AuthVerification, RemoveCartList)
+
 
 export default router;
