@@ -26,6 +26,7 @@ import {
   WishList,
 } from "../controllers/WishListController.js";
 import { CartList, CreateCartList, RemoveCartList, UpdateCartList } from "../controllers/CartListController.js";
+import { CreateInvoice, InvoiceList, InvoiceProductList, PaymentCancel, PaymentFail, PaymentIPN, PaymentSuccess } from "../controllers/InvoiceController.js";
 const router = express.Router();
 
 // Product
@@ -61,4 +62,12 @@ router.post("/CreateCartList",AuthVerification, CreateCartList)
 router.delete("/RemoveCartList",AuthVerification, RemoveCartList)
 
 
+// Invoice & Payment
+router.get("/CreateInvoice", AuthVerification, CreateInvoice);
+router.get("/InvoiceList", AuthVerification, InvoiceList);
+router.get("/InvoiceProductList", AuthVerification, InvoiceProductList);
+router.get("/PaymentSuccess/:trxID", AuthVerification, PaymentSuccess);
+router.get("/PaymentCancel/:trxID", AuthVerification, PaymentCancel);
+router.get("/PaymentFail/:trxID", AuthVerification, PaymentFail);
+router.get("/PaymentIPN/:trxID", AuthVerification, PaymentIPN);
 export default router;
